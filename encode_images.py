@@ -10,7 +10,7 @@ import config
 from encoder.generator_model import Generator
 from encoder.perceptual_model import PerceptualModel
 
-URL_FFHQ = 'https://drive.google.com/uc?id=1MEGjdvVpUsu1jB4zrXZN7Y4kBBOzizDQ'  # karras2019stylegan-ffhq-1024x1024.pkl
+MODEL_PATH = "/content/karras2019stylegan-ffhq-1024x1024.pkl"
 
 
 def split_to_batches(l, n):
@@ -47,7 +47,7 @@ def main():
 
     # Initialize generator and perceptual model
     tflib.init_tf()
-    with dnnlib.util.open_url(URL_FFHQ, cache_dir=config.cache_dir) as f:
+    with open(MODEL_PATH,"rb") as f:
         generator_network, discriminator_network, Gs_network = pickle.load(f)
 
     generator = Generator(Gs_network, args.batch_size, randomize_noise=args.randomize_noise)
@@ -69,6 +69,7 @@ def main():
         generated_images = generator.generate_images()
         generated_dlatents = generator.get_dlatents()
         for img_array, dlatent, img_name in zip(generated_images, generated_dlatents, names):
+            # print(img_array.shape) # (1024, 1024, 3)
             img = PIL.Image.fromarray(img_array, 'RGB')
             img.save(os.path.join(args.generated_images_dir, f'{img_name}.png'), 'PNG')
             np.save(os.path.join(args.dlatent_dir, f'{img_name}.npy'), dlatent)
