@@ -43,6 +43,7 @@ class PerceptualModel:
                                                dtype='float32', initializer=tf.initializers.zeros())
         self.sess.run([self.features_weight.initializer, self.features_weight.initializer])
 
+        # loss function: MSE between features of reference img and generated img
         self.loss = tf.losses.mean_squared_error(self.features_weight * self.ref_img_features,
                                                  self.features_weight * generated_img_features) / 82890.0
 
@@ -72,7 +73,13 @@ class PerceptualModel:
         vars_to_optimize = vars_to_optimize if isinstance(vars_to_optimize, list) else [vars_to_optimize]
         optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate)
         min_op = optimizer.minimize(self.loss, var_list=[vars_to_optimize])
-        for _ in range(iterations):
+        for its in range(iterations):
+            if its % 100 == 0:
+              # print(vars_to_optimize[0]) # shape: 1, 18, 512
+              code = tf.squeeze(vars_to_optimize[0]).eval()
+              np.save("/content/stylegan/prog/{}".format(its), code)
+
+
             _, loss = self.sess.run([min_op, self.loss])
             yield loss
 
