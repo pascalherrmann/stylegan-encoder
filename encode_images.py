@@ -10,7 +10,7 @@ import config
 from encoder.generator_model import Generator
 from encoder.perceptual_model import PerceptualModel
 
-MODEL_PATH = "/content/karras2019stylegan-ffhq-1024x1024.pkl"
+MODEL_PATH = "/content/stylegan-encoder/karras2019stylegan-ffhq-1024x1024.pkl"
 
 
 def split_to_batches(l, n):
