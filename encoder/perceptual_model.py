@@ -77,7 +77,7 @@ class PerceptualModel:
             if its % 100 == 0:
               # print(vars_to_optimize[0]) # shape: 1, 18, 512
               code = tf.squeeze(vars_to_optimize[0]).eval()
-              np.save("/content/stylegan/prog/{}".format(its), code)
+              np.save("/content/stylegan-encoder/prog/{}".format(its), code)
 
 
             _, loss = self.sess.run([min_op, self.loss])
